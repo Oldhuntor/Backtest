@@ -24,3 +24,7 @@ Data source
 
 1. Tushare
 2. Binance,Okx
+
+Database
+
+Sqlite
