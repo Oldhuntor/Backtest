@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+from data.database.sqlite_server import connectSqlite, DBpath
 
 # OKEx API URL
 url = "https://www.okex.com/api/spot/v3/instruments/BTC-USDT/candles"
@@ -28,6 +29,10 @@ df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
 
 # Save the data to a CSV file
 csv_filename = f"{symbol}_{interval}_data.csv"
-df.to_csv(csv_filename, index=False)
-
-print(f"Data saved to {csv_filename}")
+# Save the data to a CSV file
+table_name = f"{symbol}_{interval}"
+conn = connectSqlite(DBpath)
+print(table_name)
+df.to_sql(table_name, conn, if_exists='append', index=False)
+# Close the connection
+conn.close()

@@ -1,5 +1,8 @@
 import requests
 import pandas as pd
+import sqlite3
+from data.database.sqlite_server import connectSqlite, DBpath
+
 
 # Binance API URL
 url = "https://api.binance.com/api/v3/klines"
@@ -27,7 +30,9 @@ df = pd.DataFrame(data, columns=columns)
 df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
 
 # Save the data to a CSV file
-csv_filename = f"{symbol}_{interval}_data.csv"
-df.to_csv(csv_filename, index=False)
-
-print(f"Data saved to {csv_filename}")
+table_name = f"{symbol}_{interval}"
+conn = connectSqlite(DBpath)
+print(table_name)
+df.to_sql(table_name, conn, if_exists='append', index=False)
+# Close the connection
+conn.close()
