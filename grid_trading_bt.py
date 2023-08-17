@@ -21,3 +21,4 @@ if __name__ == '__main__':
     strategy = grid(startdate, endate, stock, broker, params)
     strategy.run()
     strategy.plot()
+    strategy.cal_performance()
