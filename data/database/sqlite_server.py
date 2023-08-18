@@ -1,3 +1,9 @@
+"""
+table format:
+
+asset name - frequency
+
+"""
 import sqlite3
 
 DBpath = '/Users/huangxuanhao/Desktop/database/BinanceData.db'
