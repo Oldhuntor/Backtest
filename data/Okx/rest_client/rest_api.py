@@ -4,6 +4,23 @@ import time
 
 # 设置基本信息
 base_url = "https://www.okex.com/api/v5/market/history-index-candles"
+
+def get_data():
+    """
+    symbol
+    frequency
+    limit
+
+    """
+    params = {
+        "instId": inst_id,
+        "bar": time_interval,
+        "limit": limit
+    }
+    
+
+
+
 inst_id = "BTC-USD"  # 替换为你需要的指数
 time_interval = "1H"  # 时间粒度，可以根据需要调整
 limit = 100  # 返回的结果集数量
@@ -40,6 +57,4 @@ while True:
     if len(data_frame) >= 1000:  # 假设获取 1000 条数据后退出循环
         break
 
-# 将数据保存为 CSV 文件
-data_frame.to_csv("historical_data.csv", index=False)
-print("Data saved as historical_data.csv")
+

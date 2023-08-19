@@ -50,7 +50,6 @@ df = pd.DataFrame(data, columns=columns)
 # Convert timestamp to datetime format
 df["time"] = pd.to_datetime(df["timestamp"], unit="ms")
 
-# Save the data to a CSV file
 print(table_name)
 print(df)
 df.to_sql(table_name, conn, if_exists='append', index=False)

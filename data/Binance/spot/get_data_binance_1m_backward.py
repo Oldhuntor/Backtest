@@ -34,12 +34,14 @@ except Exception as e:
     have_table = False
 
 
+request_time = 5
+
 if have_table:
     columns = ["timestamp", "open", "high", "low", "close", "volume", "close_time", "quote_asset_volume",
                "number_of_trades", "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume", "ignore"]
     df_old = pd.DataFrame(columns=columns)
     endTimeNew = first_timestamp
-    for i in range(10):
+    for i in range(request_time):
 
         params = {
             "symbol": symbol,
@@ -59,7 +61,7 @@ else:
     columns = ["timestamp", "open", "high", "low", "close", "volume", "close_time", "quote_asset_volume",
                "number_of_trades", "taker_buy_base_asset_volume", "taker_buy_quote_asset_volume", "ignore"]
     df_old = pd.DataFrame(columns=columns)
-    for i in range(10):
+    for i in range(request_time):
         if i == 0:
             params = {
                 "symbol": symbol,
