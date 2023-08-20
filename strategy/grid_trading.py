@@ -1,4 +1,4 @@
-from strategy.template.strategy_template import template
+from strategy.template.strategy_template_Ashare import template
 import math
 import matplotlib.pyplot as plt
 import numpy as np

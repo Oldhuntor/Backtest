@@ -10,6 +10,7 @@ url = "https://api.binance.com/api/v3/klines"
 # Trading pair and interval (e.g., BTCUSDT, 1h)
 symbol = "BTCUSDT"
 interval = "1h"
+exchange = "binance"
 
 # Request parameters
 params = {
@@ -30,7 +31,7 @@ df = pd.DataFrame(data, columns=columns)
 df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
 
 # Save the data to a CSV file
-table_name = f"{symbol}_{interval}"
+table_name = f"{exchange}_{symbol}_{interval}"
 conn = connectSqlite(DBpath)
 print(table_name)
 df.to_sql(table_name, conn, if_exists='append', index=False)

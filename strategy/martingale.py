@@ -1,4 +1,4 @@
-from strategy.template.strategy_template import template
+from strategy.template.strategy_template_Ashare import template
 
 
 class martingale(template):

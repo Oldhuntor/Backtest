@@ -10,9 +10,10 @@ url = "https://api.binance.com/api/v3/klines"
 # Trading pair and interval (e.g., BTCUSDT, 1h)
 symbol = "BTCUSDT"
 interval = "1m"
+exchange = "binance"
 
 # read the time of the last data
-table_name = f"{symbol}_{interval}"
+table_name = f"{exchange}_{symbol}_{interval}"
 conn = connectSqlite(DBpath)
 cursor = conn.cursor()
 
