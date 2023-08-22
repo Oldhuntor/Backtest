@@ -1,58 +1,4 @@
-"""
-Broker objects, act as a trader
-"""
-
-class Broker():
-    def __init__(self,startcash):
-        self.cash = startcash # initial cash
-        self.position = {}
-        self.action_log = []
-
-    def buy(self, price, amount, date):
-        self.cash -= price*amount
-        self.position += amount
-        print(f"buy for {amount}, at price {price}, on date {date}")
-        self.action_log.append('buy')
-
-    def sell(self, price, amount, date):
-        self.cash += price*amount
-        self.position -= amount
-        print(f"sell for {amount}, at price {price}, on date {date}")
-        self.action_log.append('sell')
-
-    def hold(self):
-        self.action_log.append('hold')
-
-class BrokerMulti():
-    """
-    support for multi symbol position
-    """
-    def __init__(self,startcash):
-        self.cash = startcash # initial cash
-        self.position = {}
-        self.action_log = {}
-
-    def buy(self, symbol, price, amount, date):
-        if symbol not in self.position:
-            print(f"buy the init position of {symbol}")
-            self.position[symbol] = 0
-            self.action_log[symbol] = []
-        self.cash -= price*amount
-        self.position[symbol] += amount
-        print(f"buy {symbol} for {amount}, at price {price}, on date {date}")
-        self.action_log[symbol].append('buy')
-
-    def sell(self, symbol, price, amount, date):
-        self.cash += price*amount
-        self.position[symbol] -= amount
-        print(f"sell {symbol} for {amount}, at price {price}, on date {date}")
-        self.action_log[symbol].append('sell')
-
-
-
-
-
-class contract_broker():
+class TradingSimulator:
     def __init__(self, initial_balance=100000, margin_rate=0.1, leverage=10):
         self.balance = initial_balance
         self.positions = {}  # 用字典来维护不同标的的仓位信息
@@ -115,18 +61,16 @@ class contract_broker():
         else:
             return None
 
-    # 使用示例
 
-if __name__ == '__main__':
+# 使用示例
+simulator = TradingSimulator()
 
-    simulator = contract_broker()
+# 开仓不同标的
+print(simulator.open_position("AAPL", 150, 50, is_long=True))
+print(simulator.open_position("GOOG", 2500, 10, is_long=False))
 
-    # 开仓不同标的
-    print(simulator.open_position("AAPL", 150, 50, is_long=True))
-    print(simulator.open_position("GOOG", 2500, 10, is_long=False))
+# 平仓不同标的的部分仓位
+print(simulator.close_position("AAPL", 155, quantity=30))
+print(simulator.close_position("GOOG", 2600))
 
-    # 平仓不同标的的部分仓位
-    print(simulator.close_position("AAPL", 155, quantity=30))
-    print(simulator.close_position("GOOG", 2600))
-
-    print("余额:", simulator.balance)
+print("余额:", simulator.balance)
