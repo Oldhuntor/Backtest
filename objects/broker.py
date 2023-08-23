@@ -40,13 +40,15 @@ class BrokerMulti():
         self.cash -= price*amount
         self.position[symbol] += amount
         print(f"buy {symbol} for {amount}, at price {price}, on date {date}")
-        self.action_log[symbol].append('buy')
+        action = {"action":"buy", "amount":amount, "price": price, "date":date}
+        self.action_log[symbol].append(action)
 
     def sell(self, symbol, price, amount, date):
         self.cash += price*amount
         self.position[symbol] -= amount
         print(f"sell {symbol} for {amount}, at price {price}, on date {date}")
-        self.action_log[symbol].append('sell')
+        action = {"action":"sell", "amount":amount, "price": price, "date":date}
+        self.action_log[symbol].append(action)
 
 
 

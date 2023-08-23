@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from functions.get_A_stock import get_stock_pro
@@ -15,9 +16,11 @@ class templateCrypto():
         self.start = False
         self.end = False
         self.agent = broker
-        self.record = []
+        self.record = {}
         self.params = params
+        self.strategy_name = ""
         self.init()
+        self.readParams()
 
     def run(self):
         length = len(self.data[self.symbols[0]])
@@ -49,55 +52,56 @@ class templateCrypto():
             # filter the data by date
             df['time'] = pd.to_datetime(df['time'])
             filtered_df = df[(df['time'] >= startDate) & (df['time'] <= endDate)]
+            filtered_df.drop_duplicates(inplace=True)
             self.data[symbol] = filtered_df
 
         self.sqlconn.close()
+
+    def readParams(self):
+        pass
 
     def strategy(self, ticks:dict):
         """"""
         pass
 
     def plot(self):
+        """
+        draw the position graph together in one graph
+        draw hte
+        """
 
-        self.data['trade_date'] = self.data['trade_date'].apply(self.convert_to_datetime)
+        # 处理数据
+        data = []
+        for symbol, records in self.record.items():
+            for record in records:
+                record['symbol'] = symbol
+                data.append(record)
 
-        df = pd.DataFrame(self.record)
-        df['action'] = self.agent.action_log
-        df['date'] = df['date'].apply(self.convert_to_datetime)
+        df = pd.DataFrame(data)
+        df['total_unrealizedProfit'] = df.groupby('date')['unrealizedProfit'].transform('sum')
 
-        # Create a subplot with 3 rows and 1 column
-        fig, axs = plt.subplots(4, 1, figsize=(8, 10))
+        # 创建画布和子图
+        fig, axs = plt.subplots(2, 1, figsize=(10, 12))
 
-        # Plot Position
-        axs[0].plot(df['date'], df['position'])
+        # 绘制position柱状图
+        df_position = df.pivot(index='date', columns='symbol', values='position')
+        df_position.plot(kind='bar', ax=axs[0])
         axs[0].set_ylabel('Position')
-        axs[0].grid()
+        axs[0].set_xlabel('Date')
+        axs[0].set_xticklabels(axs[0].get_xticklabels(), rotation=45)
+        axs[0].legend()
 
-        # Plot Market Price
-        axs[1].plot(self.data['trade_date'], self.data['open'], color='black')
-        axs[1].set_ylabel('Market Price')
-        # Mark buy and sell actions on Market Price plot
-        buy_data = df[df['action'] == 'buy']
-        sell_data = df[df['action'] == 'sell']
-        axs[1].scatter(buy_data['date'], buy_data['market'], color='green', label='Buy', marker='^')
-        axs[1].scatter(sell_data['date'], sell_data['market'], color='red', label='Sell', marker='v')
-
-        # Customize the legend
-        legend = axs[1].legend(loc='upper right')
-        legend.get_frame().set_facecolor('white')  # Set background color of the legend box
-        axs[1].grid()
-
-        axs[2].plot(df['date'], df['unrealizedProfit'], color='b')
-        axs[2].set_ylabel('unrealizedProfit')
-        axs[2].grid()
-
-        # Plot Cash
-        axs[3].plot(df['date'], df['cash'], color='g')
-        axs[3].set_ylabel('Cash')
-        axs[3].set_xlabel('date')
-        axs[3].grid()
-
-        plt.suptitle(f'Backtesting stock:{self.stockName}', fontsize=16)
+        # 绘制总的unrealized profit折线图
+        df_total_unrealizedProfit = df.groupby('date')['unrealizedProfit'].sum().reset_index()
+        axs[1].plot(df_total_unrealizedProfit['date'], df_total_unrealizedProfit['unrealizedProfit'], marker='o')
+        axs[1].set_ylabel('Total Unrealized Profit')
+        axs[1].set_xlabel('Date')
+        axs[1].set_xticklabels(axs[1].get_xticklabels(), rotation=45)
+        symbolStr = ""
+        for symbol in self.symbols:
+            symbolStr += symbol
+            symbolStr += ';'
+        plt.suptitle(f'Backtesting, strategy: {self.strategy_name}, symbols :{symbolStr}', fontsize=16)
 
         # Adjust layout to prevent overlapping of labels
         plt.tight_layout()
@@ -138,14 +142,21 @@ class templateCrypto():
         print(f"Portfolio Sharpe Ratio: {portfolio_sharpe_ratio:.2f}")
         print(f"Maximum Portfolio Drawdown: {max_portfolio_drawdown:.2%}")
 
-    def recorder(self, price, date):
-        unrealizedProfit = self.agent.position*price + self.agent.cash
-        record = {'cash': self.agent.cash, 'position': self.agent.position, 'market': price, 'date': date, "unrealizedProfit":unrealizedProfit}
-        self.record.append(record)
+    def recorder(self, ticks, date):
+        """
+        record the process separately
+        """
+        for symbol in self.symbols:
+            if symbol not in self.record.keys():
+                self.record[symbol] = []
+            symbol_position = np.around(self.agent.position[symbol], 3)
+            symbol_price = np.float(ticks[symbol]['open'])
+            symbol_unrealizedProfit = np.around(symbol_position*symbol_price, 3)
+            record = {'cash': np.around(self.agent.cash, 3), 'position': symbol_position, 'date': date, "unrealizedProfit": symbol_unrealizedProfit}
+            self.record[symbol].append(record)
 
     def convert_to_datetime(self, date_str):
         return pd.to_datetime(date_str, format='%Y%m%d')
-
 
 
 

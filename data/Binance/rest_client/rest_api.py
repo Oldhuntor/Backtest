@@ -9,9 +9,9 @@ SpotUrl = "https://api.binance.com/api/v3/"
 
 def get_kline(symbol, type, frequency, startTime, endTime ,is_forward, request_time):
     """
-    type = 'cm','um','spot'
+    type = 'cm','um','get_data'
     symbol:
-        spot: BTCUSDT
+        get_data: BTCUSDT
         um: BTCUSDT
         cm : BTCUSD
 

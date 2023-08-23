@@ -7,7 +7,8 @@ Strategy:
 1. Martingale
 2. Grid trading (equal ratio price gap, equal difference gap)
 3. Arbitrage (交割合约 与 永续合约，现货 与 永续合约)
-4. CTAstrategy
+4. CTAstrategy (MACD, RSI ...)
+5. Rebalance strategy (平衡仓位策略)
 
 Advanced startegy
 

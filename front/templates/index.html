@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BTCUSDT Data</title>
+</head>
+<body>
+    <h1>BTCUSDT Data</h1>
+    <ul>
+        {% for entry in btcusdt_data %}
+            <li>ID: {{ entry.id }} | Open: {{ entry.open }} | Close: {{ entry.close }} | High: {{ entry.high}} | Low: {{ entry.low}}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

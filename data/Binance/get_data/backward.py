@@ -11,11 +11,20 @@ Make a for loop to get all the historical data until we reach the end
 
 # Binance API URL
 url = "https://api.binance.com/api/v3/klines"
+cMurl = "https://dapi.binance.com/dapi/v1/klines"
+uMurl = "https://fapi.binance.com/fapi/v1/klines"
 
 # Trading pair and interval (e.g., BTCUSDT, 1h)
-symbol = "BTCUSDT"
-interval = "1m"
+symbol = "BTCUSD_231229"
+interval = "1h"
 exchange = "binance"
+type = "CM"
+
+if type == "CM":
+    url = cMurl
+elif type == "UM":
+    url = uMurl
+
 # read the time of the last data
 table_name = f"{exchange}_{symbol}_{interval}"
 conn = connectSqlite(DBpath)

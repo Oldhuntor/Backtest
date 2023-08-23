@@ -19,23 +19,24 @@ class rebalance(templateCrypto):
         date = tick1['time']
         open1 = np.float(tick1['open'])
         open2 = np.float(tick2['open'])
-
         if not self.start:
             # buy initial amount of two symbol
             init_cash = self.agent.cash
 
-            amount1 = init_cash/open1
-            amount2 = init_cash/open2
+            amount1 = init_cash/2/open1
+            amount2 = init_cash/2/open2
 
             self.agent.buy(self.symbols[0], open1,amount1,date)
             self.agent.buy(self.symbols[1], open2,amount2,date)
 
             self.start = True
+            self.recorder(ticks, date)
             return
 
         if self.end:
             total_value = self.agent.position[self.symbols[0]] * open1 + self.agent.position[self.symbols[1]] * open2
             print(f"end assets value: {total_value}")
+            self.recorder(ticks, date)
             return
 
         # compare in usdt
@@ -58,6 +59,7 @@ class rebalance(templateCrypto):
             self.agent.buy(self.symbols[0], price=open1, amount=amount1, date=date)
             self.agent.sell(self.symbols[1], price=open2, amount=amount2, date=date)
 
+        self.recorder(ticks, date)
 
 
 

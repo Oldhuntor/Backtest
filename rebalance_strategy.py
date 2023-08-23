@@ -4,7 +4,7 @@ from strategy.rebalance import rebalance
 
 params = {
     'symbols': ["BTCUSDT","ETHUSDT"],
-    'startDate': '2017-08-22',
+    'startDate': '2023-07-22',
     'endDate': '2023-08-20',
     'frequency': "1d",
     'exchange':'binance',
@@ -20,5 +20,5 @@ if __name__ == '__main__':
     broker = BrokerMulti(cash)
     strategy = rebalance(broker, params)
     strategy.run()
-    # strategy.plot()
+    strategy.plot()
     # strategy.cal_performance()
